@@ -63,78 +63,86 @@ const Chat = () => {
 
   return (
     <div className="chat-container">
-      <div className="chat-window glass-panel animate-slide-in">
-        <header className="chat-header">
-          <h2>AI Product Assistant ✨</h2>
-          <p className="subtitle">Let's find the perfect product for you.</p>
-        </header>
-
-        <div className="chat-messages">
-          {messages.map((msg) => (
-            <div key={msg.id} className={`message-wrapper ${msg.role}`}>
-              {msg.type === 'text' && (
-                <div className={`message bubble ${msg.role}`}>
-                  {msg.content}
-                </div>
+      <div className="chat-messages">
+        {messages.map((msg) => (
+          <div key={msg.id} className={`message-wrapper ${msg.role}`}>
+            <div className="message-content">
+              {msg.role === 'assistant' && (
+                <div className="avatar assistant-avatar">AI</div>
               )}
-              {msg.type === 'recommendations' && (
-                <div className="recommendations-container">
-                  <h3 className="rec-title">Top Recommendation</h3>
-                  {msg.recommendations.map(rec => (
-                    <div key={rec.id} className="rec-card glass-panel">
-                      <div className="rec-header">
-                        <h4>{rec.name}</h4>
-                        <span className="price">₹{Number(rec.price).toLocaleString()}</span>
+              <div className="message-body">
+                {msg.type === 'text' && (
+                  <div className={`message bubble ${msg.role}`}>
+                    {msg.content}
+                  </div>
+                )}
+                {msg.type === 'recommendations' && (
+                  <div className="recommendations-container">
+                    <h3 className="rec-title">Top Recommendation</h3>
+                    {msg.recommendations.map(rec => (
+                      <div key={rec.id} className="rec-card glass-panel">
+                        <div className="rec-header">
+                          <h4>{rec.name}</h4>
+                          <span className="price">₹{Number(rec.price).toLocaleString()}</span>
+                        </div>
+                        <p className="brand">{rec.brand}</p>
+                        <div className="reasons">
+                          {rec.matchReasons && rec.matchReasons.map((r, i) => (
+                            <span key={i} className="reason-tag">✅ {r}</span>
+                          ))}
+                        </div>
                       </div>
-                      <p className="brand">{rec.brand}</p>
-                      <div className="reasons">
-                        {rec.matchReasons && rec.matchReasons.map((r, i) => (
-                          <span key={i} className="reason-tag">✅ {r}</span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                  
-                  {msg.alternatives && msg.alternatives.length > 0 && (
-                    <>
-                      <h4 className="alt-title">Great Alternatives</h4>
-                      <div className="alternatives-grid">
-                        {msg.alternatives.map(alt => (
-                          <div key={alt.id} className="alt-card glass-panel">
-                            <h5>{alt.name}</h5>
-                            <span className="price">₹{Number(alt.price).toLocaleString()}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
-          ))}
-          {isLoading && (
-            <div className="message-wrapper assistant">
-              <div className="message bubble assistant typing-indicator">
-                <span></span><span></span><span></span>
+                    ))}
+                    
+                    {msg.alternatives && msg.alternatives.length > 0 && (
+                      <>
+                        <h4 className="alt-title">Great Alternatives</h4>
+                        <div className="alternatives-grid">
+                          {msg.alternatives.map(alt => (
+                            <div key={alt.id} className="alt-card glass-panel">
+                              <h5>{alt.name}</h5>
+                              <span className="price">₹{Number(alt.price).toLocaleString()}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
+          </div>
+        ))}
+        {isLoading && (
+          <div className="message-wrapper assistant">
+            <div className="message-content">
+              <div className="avatar assistant-avatar">AI</div>
+              <div className="message-body">
+                <div className="message bubble assistant typing-indicator">
+                  <span></span><span></span><span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} className="scroll-spacer" />
+      </div>
 
+      <div className="input-container">
         <form className="chat-input-area" onSubmit={handleSubmit}>
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your message..."
+            placeholder="Message AI Assistant..."
             disabled={isLoading}
             className="chat-input"
           />
-          <button type="submit" disabled={isLoading || !input.trim()} className="btn-primary send-btn">
-            Send
+          <button type="submit" disabled={isLoading || !input.trim()} className="send-btn">
+            ↑
           </button>
         </form>
+        <p className="disclaimer">AI can make mistakes. Consider verifying important information.</p>
       </div>
     </div>
   );
